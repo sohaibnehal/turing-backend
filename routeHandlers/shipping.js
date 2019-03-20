@@ -1,27 +1,42 @@
-const logger = require('../config/Logger/logger');
 const Shipping = require('../models/Shipping');
 
-// Error handling
-const sendError = (err, res) => {
-  let response = { ...responseObj };
-  response.status = 501;
-  response.message = typeof err === 'object' ? err.message : err;
-  res.status(501).json(response);
-};
-
-// Response handling
-let responseObj = {
-  status: 200,
-  data: [],
-  message: null
-};
-
 exports.getAllShippingOptions = async (req, res) => {
-  let response = { ...responseObj };
-  Shipping.find({}, (err, shippingOptions) => {
-    if (err) sendError({ message: err }, res);
-
-    response.data = shippingOptions;
-    res.json(response);
-  });
+  try {
+    let shippingOptions = await Shipping.find({})
+      .populate('shippingRegionId')
+      .exec();
+    res.status(200).json({
+      message: 'Shipping Options have been fetched successfully',
+      data: shippingOptions
+    });
+  } catch (err) {
+    res.status(404).json({
+      message: err
+    });
+  }
+};
+exports.getAllShippingOptionsByRegions = async (req, res) => {
+  try {
+    let shippingOptions = await Shipping.find({})
+      .lean()
+      .populate('shippingRegionId')
+      .exec();
+    let data = {};
+    shippingOptions.forEach(item => {
+      if (data[item.shippingRegionId.region]) {
+        data[item.shippingRegionId.region].push(item);
+      } else {
+        data[item.shippingRegionId.region] = [];
+        data[item.shippingRegionId.region].push(item);
+      }
+    });
+    res.status(200).json({
+      message: 'Shipping Options have been fetched successfully',
+      data
+    });
+  } catch (err) {
+    res.status(404).json({
+      message: err
+    });
+  }
 };

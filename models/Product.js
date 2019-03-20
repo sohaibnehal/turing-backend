@@ -5,8 +5,8 @@ mongoose.Promise = global.Promise;
 const productSchema = new Schema({
   name: String,
   description: String,
-  price: String,
-  discounted_price: String,
+  price: Number,
+  discounted_price: Number,
   image: String,
   image_2: String,
   thumbnail: String,
@@ -19,9 +19,7 @@ const productSchema = new Schema({
 // on every save, add the date
 productSchema.pre('save', next => {
   const currentDate = new Date();
-
   this.updated_at = currentDate;
-
   if (!this.created_at) this.created_at = currentDate;
   next();
 });

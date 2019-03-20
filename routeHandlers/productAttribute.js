@@ -1,23 +1,6 @@
-const logger = require('../config/Logger/logger');
 const ProductAttribute = require('../models/ProductAttribute');
 
-// Error handling
-const sendError = (err, res) => {
-  let response = { ...responseObj };
-  response.status = 501;
-  response.message = typeof err === 'object' ? err.message : err;
-  res.status(501).json(response);
-};
-
-// Response handling
-let responseObj = {
-  status: 200,
-  data: [],
-  message: null
-};
-
 exports.getAllAttributesByProductId = async (req, res) => {
-  let response = { ...responseObj };
   if (req.params.id) {
     try {
       let data = await ProductAttribute.find({
@@ -36,13 +19,18 @@ exports.getAllAttributesByProductId = async (req, res) => {
           }
         });
       }
-      response.data = attributes;
-      response.message = 'Products Attributes have been fetched successfully';
-      res.json(response);
+      res.status(200).json({
+        message: 'Products Attributes have been fetched successfully',
+        data: attributes
+      });
     } catch (err) {
-      sendError({ message: err }, res);
+      res.status(404).json({
+        message: err
+      });
     }
   } else {
-    sendError({ message: 'Product ID is required' }, res);
+    res.status(400).json({
+      message: 'Product ID is required'
+    });
   }
 };

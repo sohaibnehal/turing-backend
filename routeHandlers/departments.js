@@ -1,45 +1,35 @@
-const logger = require('../config/Logger/logger');
 const Department = require('../models/Department');
 
-// Error handling
-const sendError = (err, res) => {
-  let response = { ...responseObj };
-  response.status = 501;
-  response.message = typeof err === 'object' ? err.message : err;
-  res.status(501).json(response);
-};
-
-// Response handling
-let responseObj = {
-  status: 200,
-  data: [],
-  message: null
-};
-
 exports.getAllDepartments = async (req, res) => {
-  let response = { ...responseObj };
   try {
     let departments = await Department.find({});
-    response.data = departments;
-    response.message = 'Departments have been fetched successfully';
-    res.json(response);
+    res.status(200).json({
+      message: 'Departments have been fetched successfully',
+      data: departments
+    });
   } catch (err) {
-    sendError({ message: err }, res);
+    res.status(404).json({
+      message: err
+    });
   }
 };
 
 exports.getDepartmentById = async (req, res) => {
-  let response = { ...responseObj };
   if (req.params.id) {
     try {
       let department = await Department.findById(req.params.id);
-      response.data = department;
-      response.message = 'Department has been fetched successfully';
-      res.json(response);
+      res.status(200).json({
+        message: 'Department has been fetched successfully',
+        data: department
+      });
     } catch (err) {
-      sendError({ message: err }, res);
+      res.status(404).json({
+        message: err
+      });
     }
   } else {
-    sendError({ message: 'Department ID is required' }, res);
+    res.status(400).json({
+      message: 'Department ID is required'
+    });
   }
 };

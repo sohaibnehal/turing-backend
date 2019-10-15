@@ -27,6 +27,7 @@ app.use(
 
 app.use(cors);
 app.use('/api', api);
+app.get('/', (req, res) => res.send(`API is running`));
 
 app.use((req, res, next) => {
   if (

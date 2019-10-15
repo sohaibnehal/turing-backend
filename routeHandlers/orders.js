@@ -59,8 +59,7 @@ exports.deleteOrder = async (req, res) => {
     try {
       let order = await Order.deleteOne({ _id: req.params.id });
       res.status(200).json({
-        message: 'Order has been deleted successfully',
-        data: orders
+        message: 'Order has been deleted successfully'
       });
     } catch (err) {
       res.status(404).json({

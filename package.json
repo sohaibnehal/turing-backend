@@ -14,7 +14,7 @@
     "http-errors": "~1.6.2",
     "jsonwebtoken": "^8.5.0",
     "mongoose": "^5.4.17",
-    "mongoose-data-seed": "^1.0.7",
+    "mongoose-data-seed": "^2.1.6",
     "morgan": "~1.9.0",
     "winston": "2.4.0"
   }
